@@ -1,5 +1,7 @@
 
 import sys
+
+MEMORY_LEN = 300
  
 class Interpreter:
 
@@ -17,7 +19,7 @@ class Interpreter:
 
     def __init__(self, source_code):
         self.code = source_code.encode('ASCII')
-        self.data = bytearray(1)  # one cell, zero-filled
+        self.data = bytearray(MEMORY_LEN)
         self.ptr = 0  # data pointer
         self.pc = 0  # program counter (a.k.a. instruction pointer)
 
@@ -28,16 +30,12 @@ class Interpreter:
         self.ptr -= 1
 
     def inc(self):
-        if self.ptr == len(self.data):
-            self.data.extend([0])
         if self.data[self.ptr] < 255:
             self.data[self.ptr] += 1
         else:
             self.data[self.ptr] = 0
 
     def dec(self):
-        if self.ptr == len(self.data):
-            self.data.extend([0])
         if self.data[self.ptr] > 0:
             self.data[self.ptr] -= 1
         else:
@@ -47,8 +45,6 @@ class Interpreter:
         sys.stdout.write(chr(self.data[self.ptr]))
 
     def input(self):
-        if self.ptr == len(self.data):
-            self.data.extend([0])
         self.data[self.ptr] = ord(sys.stdin.read(1))
 
     def conditional_jump(self):
@@ -63,7 +59,10 @@ class Interpreter:
 
 
     def show_state(self):
-        octets = ' '.join('%02x' % octet for octet in self.data)
+        for i, v in enumerate(reversed(self.data)):
+            if v > 0: break
+        data_len = len(self.data) - i
+        octets = ' '.join('%02x' % octet for octet in self.data[:data_len])
         print(self.code.decode('ASCII'), '│', octets)
         left_pad = ' ' * self.pc
         middle_pad = ' ' * (len(self.code) - self.pc)
