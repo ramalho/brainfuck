@@ -1,0 +1,18 @@
+Short: 240 byte compiler. Fun, with src. OS 2.0
+Type: dev/lang
+Uploader: umueller@amiga.physik.unizh.ch
+
+The brainfuck compiler knows the following instructions:
+
+Cmd  Effect                               
+---  ------                               
++    Increases element under pointer      
+-    Decrases element under pointer       
+>    Increases pointer                    
+<    Decreases pointer                    
+[    Starts loop, flag under pointer      
+]    Indicates end of loop                
+.    Outputs ASCII code under pointer     
+,    Reads char and stores ASCII under ptr
+
+Who can program anything useful with it? :)
