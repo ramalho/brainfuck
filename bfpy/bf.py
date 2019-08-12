@@ -27,7 +27,10 @@ class Interpreter:
     }
 
     def __init__(self, source_code, *, pc=0, ptr=0, visible=False):
-        self.code = source_code
+        if visible:
+            self.code = self.compact(source_code)
+        else:
+            self.code = source_code
         self.pc = pc  # program counter (a.k.a. instruction pointer)
         self.data = bytearray(MEMORY_LEN)
         self.ptr = ptr  # data pointer
@@ -91,16 +94,20 @@ class Interpreter:
     def jump_back(self):
         self.pc, _ = self.loops[-1]
 
+
+    def compact(self, code):
+        code = ''.join(code.split())
+        return ''.join(c for c in code if c in Interpreter.actions)
+
     def show_state(self):
         for i, v in enumerate(reversed(self.data)):
             if v > 0:
                 break
         data_len = len(self.data) - i
-        source = self.code.strip()
         octets = ' '.join('%02x' % octet for octet in self.data[:data_len])
-        print(source, '│', octets)
+        print(self.code, '│', octets)
         left_pad = ' ' * self.pc
-        middle_pad = ' ' * (len(source) - self.pc)
+        middle_pad = ' ' * (len(self.code) - self.pc)
         right_pad = '   ' * self.ptr
         print(left_pad + '↑' + middle_pad + '│' + right_pad + ' ↑↑')
         print()
