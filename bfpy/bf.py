@@ -96,7 +96,6 @@ class Interpreter:
 
 
     def compact(self, code):
-        code = ''.join(code.split())
         return ''.join(c for c in code if c in Interpreter.actions)
 
     def show_state(self):
